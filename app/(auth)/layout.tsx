@@ -1,5 +1,5 @@
 import { Inter } from "next/font/google";
-import "../globals.css";
+import "../globals.css"
 import { ClerkProvider } from "@clerk/nextjs";
 export const metadata = {
   title: "social",
@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-    <html lang="en-vi">
+    <html lang="en">
         <body className={`${inter.className}  bg-dark-1`}>
           <div className=" w-full flex justify-center items-center  min-h-screen">
             {children}
