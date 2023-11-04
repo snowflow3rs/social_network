@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "../globals.css"
 import { ClerkProvider } from "@clerk/nextjs";
+import Image from "next/image";
 export const metadata = {
   title: "social",
   description: "A social network",
@@ -16,9 +17,14 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
         <body className={`${inter.className}  bg-dark-1`}>
-          <div className=" w-full flex justify-center items-center  min-h-screen">
-            {children}
-          </div>
+          <div className=" w-full flex justify-between h-screen">
+           <div className="flex flex-1 justify-center items-center flex-col py-10">
+           {children}
+           </div>
+           
+           <img src="/img_intro.jpg" alt="" className=' hidden xl:block h-screen w-1/2 object-cover bg-no-repeat'/>
+          
+          </div>  
         </body>
       </html>
     </ClerkProvider>
