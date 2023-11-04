@@ -202,7 +202,7 @@ const AccountProfile = ({ user }: PropsUserData) => {
               </FormLabel>
               <FormControl>
                 <Textarea
-                  rows={10}
+                  rows={8}
                   placeholder="Enter your Bio"
                   className=" account-form_input "
                   {...field}

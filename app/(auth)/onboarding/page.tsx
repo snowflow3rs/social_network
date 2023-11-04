@@ -19,8 +19,8 @@ const onBoarding: React.FC = async () => {
     image: userInfor ? userInfor?.image : user.imageUrl,
   };
   return (
-    <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20 ">
-      <h1 className="head-text">OnBoarding</h1>
+    <main className="mx-auto flex max-w-3xl flex-col justify-start px-10  h-screen   ">
+      <h1 className="head-text mt-[20px]">OnBoarding</h1>
       <p className="mt-3 text-base-regular text-light-2">
         Complete your profile now to use Threads
       </p>
