@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 interface Props {
   accountId: string;
-  authUser: string;
+  authUserId: string;
   name: string;
   username: string;
   imgUrl: string;
@@ -12,7 +12,7 @@ interface Props {
 }
 const ProfileHead = ({
   accountId,
-  authUser,
+  authUserId,
   name,
   username,
   imgUrl,
@@ -38,7 +38,7 @@ const ProfileHead = ({
             <p className="text-base-medium text-gray-1">@{username}</p>
           </div>
         </div>
-        {accountId === authUser && type !== "Community" && (
+        {accountId === authUserId && type !== "Community" && (
           <Link href="/profile/edit">
             <div className="flex cursor-pointer gap-3 rounded-lg bg-dark-3 px-4 py-2">
               <Image
