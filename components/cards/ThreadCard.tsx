@@ -102,7 +102,7 @@ const ThreadCard = ({
                             <img
                                 src={imgThread}
                                 alt="Post Image"
-                                className=" pt-[14px]  flex items-center   rounded-lg  lg:base-medium"
+                                className=" pt-[14px]  flex items-center   rounded-lg  lg:base-medium w-[680px] h-auto"
                             />
                         ) : (
                             <></>
