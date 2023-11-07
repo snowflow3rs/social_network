@@ -114,14 +114,19 @@ const ThreadCard = ({
                                     likes={likes}
                                     userId={JSON.stringify(currentUserId)}
                                 />
-                                <Link href={`/thread/${id}`}>
-                                    <Image
-                                        src="/assets/reply.svg"
-                                        alt="heart"
-                                        width={24}
-                                        height={24}
-                                        className=" cursor-pointer object-contain"
-                                    />
+                                <Link href={`/thread/${id}`} className="flex group transition-colors">
+                                    <div className=" rounded-lg group-hover:bg-sky-400">
+                                        <img
+                                            src="/assets/reply.svg"
+                                            alt="heart"
+                                            width={24}
+                                            height={24}
+                                            className="cursor-pointer object-contain"
+                                        />
+                                    </div>
+                                    <p className=" small-medium lg:base-medium cursor-pointer text-gray-1 ml-[4px]  group-hover:text-sky-400">
+                                        {comments.length}
+                                    </p>
                                 </Link>
                                 <Image
                                     src="/assets/repost.svg"
