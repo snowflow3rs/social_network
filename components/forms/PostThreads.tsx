@@ -27,7 +27,7 @@ const PostThreads = ({ userId }: { userId: string }) => {
         defaultValues: {
             thread: '',
             image_thread: '',
-            accountId: userId,
+            accountId: JSON.parse(userId),
         },
     });
     const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (values: string) => void) => {
@@ -66,7 +66,7 @@ const PostThreads = ({ userId }: { userId: string }) => {
         await createThread({
             text: values.thread,
             image: values.image_thread,
-            author: userId,
+            author: JSON.parse(userId),
             communityId: null,
             path: pathname,
         });
