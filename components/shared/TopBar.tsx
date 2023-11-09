@@ -14,9 +14,9 @@ const TopBar = async () => {
                 {/* <p className="text-heading3-bold text-light-1 max-xs:hidden ">DNE</p> */}
             </Link>
 
-            {/* <div>
+            <div>
                 <SearchBar routeType="search" tabIndex={100} data={data} />
-            </div> */}
+            </div>
             <div className="flex items-center gap-1">
                 <div className="block md:hidden ">
                     {/* using library clerk for sign out */}
