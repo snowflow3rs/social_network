@@ -3,7 +3,7 @@ import { fetchUser } from '@/lib/actions/user.actions';
 
 import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-const onBoarding: React.FC = async () => {
+const onBoarding = async () => {
     const user = await currentUser();
     if (!user) return null;
     const userInfor = await fetchUser(user.id);

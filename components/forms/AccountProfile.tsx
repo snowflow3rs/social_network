@@ -26,7 +26,7 @@ interface PropsUserData {
     };
     btnTitle: string;
 }
-const AccountProfile = ({ user }: PropsUserData) => {
+const AccountProfile = ({ user, btnTitle }: PropsUserData) => {
     const router = useRouter();
     const pathname = usePathname();
     const [files, setFiles] = useState<File[]>([]);
@@ -190,7 +190,7 @@ const AccountProfile = ({ user }: PropsUserData) => {
                     )}
                 />
                 <Button type="submit" className="bg-primary-500">
-                    Submit
+                    {btnTitle}
                 </Button>
             </form>
         </Form>
