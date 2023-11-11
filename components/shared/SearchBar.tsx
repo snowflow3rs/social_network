@@ -16,10 +16,9 @@ import { fetchSearchUser } from '@/lib/actions/user.actions';
 interface Props {
     routeType: string;
     tabIndex: number;
-    data?: any;
 }
 
-export const SearchBar = ({ routeType, tabIndex, data }: Props) => {
+export const SearchBar = ({ routeType, tabIndex }: Props) => {
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -128,13 +127,3 @@ export const SearchBar = ({ routeType, tabIndex, data }: Props) => {
         </div>
     );
 };
-
-// const delayDebounceFn = setTimeout(() => {
-//   if (searchValue) {
-//     router.push(`/${routeType}?q=` + searchValue);
-//   } else {
-//     router.push(`/${routeType}`);
-//   }
-// }, 500);
-
-// return () => clearTimeout(delayDebounceFn);

@@ -6,7 +6,6 @@ import { dark } from '@clerk/themes';
 import { SearchBar } from './SearchBar';
 
 const TopBar = async () => {
-    const data = await JSON.parse(JSON.stringify(await currentUser()));
     return (
         <nav className="topbar">
             <Link href="/" className="flex items-center gap-4">
@@ -15,7 +14,7 @@ const TopBar = async () => {
             </Link>
 
             <div>
-                <SearchBar routeType="search" tabIndex={100} data={data} />
+                <SearchBar routeType="search" tabIndex={100} />
             </div>
             <div className="flex items-center gap-1">
                 <div className="block md:hidden ">
