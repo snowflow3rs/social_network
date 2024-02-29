@@ -96,17 +96,20 @@ const ThreadCard = ({
                             </p>
                         </Link>
 
-                        <p className="mt-2 text-small-regular text-light-2">{formatContent(content)}</p>
+                        <p className="mt-2 text-small-regular text-light-2 max-h-[513px] overflow-hidden">
+                            {formatContent(content)}
 
-                        {imgThread ? (
-                            <img
-                                src={imgThread}
-                                alt="Post Image"
-                                className=" pt-[14px]  flex items-center   rounded-lg  lg:base-medium w-full h-auto"
-                            />
-                        ) : (
-                            <></>
-                        )}
+                            {imgThread ? (
+                                <img
+                                    src={imgThread}
+                                    alt="Post Image"
+                                    className=" pt-[14px]  flex items-center   rounded-lg  lg:base-medium aspect-square"
+                                />
+                            ) : (
+                                <></>
+                            )}
+                        </p>
+
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
                             <div className="flex gap-3.5">
                                 <HeartStat
@@ -201,7 +204,6 @@ const ThreadCard = ({
                     />
                 </Link>
             )}
-            <p className="text-subtle-medium text-gray-1 pt-[10px]">{formatDateString(createdAt)}</p>
         </article>
     );
 };

@@ -125,7 +125,6 @@ export const fetchThreadById = async (id: string) => {
 
 export const AddCommentToThread = async (threadId: string, commentText: string, userId: string, path: string) => {
     try {
-        // Find the original thread by its ID
         const originalThread = await Thread.findById(threadId);
 
         if (!originalThread) {
