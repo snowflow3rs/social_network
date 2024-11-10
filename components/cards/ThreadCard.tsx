@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { formatDateString, multiFormatDateString } from '@/lib/utils';
 import HeartStat from '../shared/HeartStat';
 import DeleteThread from '../shared/DeleteThreads';
+import EditThreads from '../shared/EditThreads';
 // import DeleteThread from "../form/DeleteThreads";
 // import HeartStat from "../shared/HeartStat";
 
@@ -32,7 +33,7 @@ interface Props {
         };
     }[];
 
-    likes: string[];
+    likes: [];
     isComment?: boolean;
 }
 const ThreadCard = ({
@@ -99,24 +100,18 @@ const ThreadCard = ({
                         <p className="mt-2 text-small-regular text-light-2 max-h-[513px] overflow-hidden">
                             {formatContent(content)}
 
-                            {imgThread ? (
+                            {imgThread && (
                                 <img
                                     src={imgThread}
                                     alt="Post Image"
-                                    className=" pt-[14px]  flex items-center   rounded-lg  lg:base-medium aspect-square"
+                                    className=" pt-[14px]  flex items-center   rounded-lg  lg:base-medium object-fit"
                                 />
-                            ) : (
-                                <></>
                             )}
                         </p>
 
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
                             <div className="flex gap-3.5">
-                                <HeartStat
-                                    postId={JSON.stringify(id)}
-                                    likes={likes}
-                                    userId={JSON.stringify(currentUserId)}
-                                />
+                                <HeartStat postId={String(id)} likes={likes} userId={currentUserId} />
                                 <Link href={`/thread/${id}`} className="flex group transition-colors">
                                     <div className=" rounded-lg group-hover:bg-sky-400">
                                         <img
@@ -157,13 +152,22 @@ const ThreadCard = ({
                         </div>
                     </div>
                     <div>
-                        <DeleteThread
-                            threadId={JSON.stringify(id)}
-                            currentUserId={currentUserId}
-                            authorId={author.id}
-                            parentId={parentId}
-                            isComment={isComment}
-                        />
+                        <div className="flex item-center gap-2 ">
+                            <EditThreads
+                                threadId={String(id)}
+                                currentUserId={currentUserId}
+                                authorId={author.id}
+                                parentId={parentId}
+                                isComment={isComment}
+                            />
+                            <DeleteThread
+                                threadId={JSON.stringify(id)}
+                                currentUserId={currentUserId}
+                                authorId={author.id}
+                                parentId={parentId}
+                                isComment={isComment}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

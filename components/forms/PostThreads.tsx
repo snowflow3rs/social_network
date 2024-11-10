@@ -1,5 +1,5 @@
 'use client';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,9 +15,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { threadValidation } from '@/lib/validations/thread';
 import { useUploadThing } from '@/lib/uploadThing';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { createThread } from '@/lib/actions/thread.actions';
+import { createThread, UpdatePost } from '@/lib/actions/thread.actions';
 
-const PostThreads = ({ userId }: { userId: string }) => {
+const PostThreads = ({ userId, threadId, data }: { userId: string; threadId?: string; data?: any }) => {
     const router = useRouter();
     const pathname = usePathname();
     const [files, setFiles] = useState<File[]>([]);
@@ -25,11 +25,12 @@ const PostThreads = ({ userId }: { userId: string }) => {
     const form = useForm({
         resolver: zodResolver(threadValidation),
         defaultValues: {
-            thread: '',
-            image_thread: '',
+            thread: data ? data.text : '',
+            image_thread: data ? data.image_thread : '',
             accountId: JSON.parse(userId),
         },
     });
+
     const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (values: string) => void) => {
         e.preventDefault();
 
@@ -63,15 +64,23 @@ const PostThreads = ({ userId }: { userId: string }) => {
             }
         }
 
-        await createThread({
-            text: values.thread,
-            image: values.image_thread,
-            author: JSON.parse(userId),
-            communityId: null,
-            path: pathname,
-        });
+        if (threadId) {
+            await UpdatePost(threadId, values.thread, values.image_thread, JSON.parse(userId), pathname);
+        } else {
+            await createThread({
+                text: values.thread,
+                image: values.image_thread,
+                author: JSON.parse(userId),
+                communityId: null,
+                path: pathname,
+            });
+        }
 
-        router.push('/');
+        if (pathname === `/create-thread/edit/${threadId}`) {
+            router.back();
+        } else {
+            router.push('/');
+        }
     };
 
     return (

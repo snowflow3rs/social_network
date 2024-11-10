@@ -12,14 +12,7 @@ interface Params {
     communityId: string | null;
     path: string;
 }
-export const createThread = async ({
-    text,
-    image,
-    author,
-    communityId,
-
-    path,
-}: Params) => {
+export const createThread = async ({ text, image, author, communityId, path }: Params) => {
     try {
         connectDB();
 
@@ -218,17 +211,37 @@ export async function deleteThread(id: string, path: string): Promise<void> {
     }
 }
 
-export async function likePosts(postId: string, likeArray: string[]) {
+export async function likePosts(postId: string, userId: string) {
     try {
         connectDB();
 
-        const updatePosted = await Thread.findByIdAndUpdate(postId, { $addToSet: { likes: likeArray } }, { new: true });
+        const post = await Thread.findById(postId);
 
-        if (!updatePosted) {
-            throw new Error('Post not found');
+        if (!post.likes.includes(userId)) {
+            await post.updateOne({ $push: { likes: userId } });
+        } else {
+            await post.updateOne({ $pull: { likes: userId } });
         }
-        return updatePosted;
     } catch (error: any) {
         throw new Error(`Failed to update like Post: ${error.message}`);
+    }
+}
+
+export async function UpdatePost(postId: string, text: string, image: string, author: string, path: string) {
+    try {
+        connectDB();
+        const post = await Thread.findById(postId);
+        await post.updateOne({
+            $set: {
+                text,
+                image,
+                author,
+            },
+        });
+        if (path === `/create-thread/edit/${postId}`) {
+            revalidatePath(path);
+        }
+    } catch (error: any) {
+        throw new Error(`Failed to update  Post: ${error.message}`);
     }
 }

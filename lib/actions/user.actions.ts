@@ -45,15 +45,24 @@ export const updateUser = async ({ userID, username, name, bio, image, path }: P
 export const fetchUser = async (userId: string) => {
     try {
         connectDB();
-        return await User.findOne({ id: userId }).populate({
-            path: 'communities',
-            model: Community,
-        });
+        return await User.findOne({ id: userId })
+            .populate({
+                path: 'communities',
+                model: Community,
+            })
+            .populate('threads');
     } catch (error: any) {
         throw new Error(`Fail fetch User, ${error.message}`);
     }
 };
-
+export const getAllUser = async () => {
+    try {
+        await connectDB();
+        return await User.find();
+    } catch (error: any) {
+        throw new Error(`Fail fetch User, ${error.message}`);
+    }
+};
 export async function fetchUserPosts(userId: string) {
     try {
         connectDB();

@@ -1,38 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
-import { checkIsLiked } from '@/lib/utils';
+import React, { useEffect, useState } from 'react';
+
 import { likePosts } from '@/lib/actions/thread.actions';
 
-interface Props {
-    postId: string;
-    likes: string[];
+const HeartStat = ({ postId, likes, userId }: any) => {
+    const [like, setLike] = useState(likes.length);
+    const [isLiked, setIsLiked] = useState(false);
+    useEffect(() => {
+        setIsLiked(likes.includes(userId));
+    }, [userId, likes]);
+    const handleLikePost = async () => {
+        await likePosts(postId, userId);
 
-    userId: string;
-}
-const HeartStat = ({ postId, likes, userId }: Props) => {
-    const [liked, setLiked] = useState<string[]>(likes);
-
-    const handleLikePost = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
-        e.stopPropagation();
-
-        let newLiked = [...liked];
-
-        if (newLiked.includes(JSON.parse(userId))) {
-            newLiked = newLiked.filter((Id) => Id !== JSON.parse(userId));
-        } else {
-            newLiked.push(JSON.parse(userId));
-        }
-
-        setLiked(newLiked);
-        likePosts(JSON.parse(postId), newLiked);
+        setLike(isLiked ? like - 1 : like + 1);
+        setIsLiked(!isLiked);
     };
 
     return (
         <div className="flex group transition-colors">
             <div className=" rounded-lg group-hover:bg-red-400">
                 <img
-                    src={`${checkIsLiked(liked, JSON.parse(userId)) ? '/assets/liked.svg' : '/assets/heart-gray.svg'}`}
+                    src={`${isLiked ? '/assets/liked.svg' : '/assets/heart-gray.svg'}`}
                     alt="heart"
                     width={24}
                     height={24}
@@ -41,7 +30,7 @@ const HeartStat = ({ postId, likes, userId }: Props) => {
                 />
             </div>
             <p className="small-medium lg:base-medium cursor-pointer text-gray-1 ml-[2px] group-hover:text-red-400">
-                {liked?.length}
+                {like}
             </p>
         </div>
     );
