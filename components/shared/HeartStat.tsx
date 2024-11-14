@@ -3,15 +3,18 @@
 import React, { useEffect, useState } from 'react';
 
 import { likePosts } from '@/lib/actions/thread.actions';
+import { usePathname } from 'next/navigation';
 
 const HeartStat = ({ postId, likes, userId }: any) => {
     const [like, setLike] = useState(likes.length);
     const [isLiked, setIsLiked] = useState(false);
+    const path = usePathname();
+
     useEffect(() => {
         setIsLiked(likes.includes(userId));
     }, [userId, likes]);
     const handleLikePost = async () => {
-        await likePosts(postId, userId);
+        await likePosts(postId, userId, path);
 
         setLike(isLiked ? like - 1 : like + 1);
         setIsLiked(!isLiked);

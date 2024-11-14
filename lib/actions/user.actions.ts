@@ -7,6 +7,7 @@ import { FilterQuery, SortOrder } from 'mongoose';
 import User from '../models/user.model';
 import Community from '../models/community.model';
 import Thread from '../models/thread.model';
+import { read } from 'fs';
 
 interface Props {
     userID: string;
@@ -46,10 +47,10 @@ export const fetchUser = async (userId: string) => {
     try {
         connectDB();
         return await User.findOne({ id: userId })
-            .populate({
-                path: 'communities',
-                model: Community,
-            })
+            // .populate({
+            //     path: 'communities',
+            //     model: Community,
+            // })
             .populate('threads');
     } catch (error: any) {
         throw new Error(`Fail fetch User, ${error.message}`);
@@ -214,5 +215,57 @@ export const fetchSearchUser = async ({
     } catch (error) {
         console.error('Error fetching user search:', error);
         throw error;
+    }
+};
+
+export const FollowUser = async (userId: string, params: string, path: string) => {
+    if (userId !== params) {
+        try {
+            await connectDB();
+
+            const user = await User.findOne({ id: params });
+            const currentUser = await User.findOne({ id: userId });
+            const isFollowing = user.followers.includes(userId);
+
+            if (!isFollowing) {
+                await user.updateOne({ $push: { followers: userId } });
+                await currentUser.updateOne({ $push: { followings: params } });
+                if (path === `/profile/${params}`) {
+                    revalidatePath(path);
+                }
+            } else if (isFollowing) {
+                await user.updateOne({ $pull: { followers: userId } });
+                await currentUser.updateOne({ $pull: { followings: params } });
+                if (path === `/profile/${params}`) {
+                    revalidatePath(path);
+                }
+            }
+        } catch (error: any) {
+            throw new Error(`Fail toggle follow User, ${error.message}`);
+        }
+    }
+};
+
+export const getFriendsUser = async (params: string, path?: string) => {
+    try {
+        await connectDB();
+        const user = await User.findOne({ id: params });
+        const friends = await Promise.all(
+            user.followings.map((friendId: string) => {
+                return User.findOne({ id: friendId });
+            }),
+        );
+        let friendList: any = [];
+        friends.map((friend) => {
+            const { _id, id, name, username, image } = friend;
+            friendList.push({ _id, id, name, username, image });
+        });
+
+        if (path === `/`) {
+            revalidatePath(path);
+        }
+        return friendList;
+    } catch (error: any) {
+        throw new Error(`Fail fetch User, ${error.message}`);
     }
 };

@@ -211,7 +211,7 @@ export async function deleteThread(id: string, path: string): Promise<void> {
     }
 }
 
-export async function likePosts(postId: string, userId: string) {
+export async function likePosts(postId: string, userId: string, path: string) {
     try {
         connectDB();
 
@@ -221,6 +221,10 @@ export async function likePosts(postId: string, userId: string) {
             await post.updateOne({ $push: { likes: userId } });
         } else {
             await post.updateOne({ $pull: { likes: userId } });
+        }
+
+        if (path === '/') {
+            revalidatePath(path);
         }
     } catch (error: any) {
         throw new Error(`Failed to update like Post: ${error.message}`);

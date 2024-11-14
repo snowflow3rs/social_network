@@ -2,19 +2,19 @@ import { currentUser } from '@clerk/nextjs';
 
 import UserCard from '../cards/UserCard';
 import { fetchCommunities } from '@/lib/actions/community.actions';
-import { fetchUsersRightBar } from '@/lib/actions/user.actions';
+import { fetchUsersRightBar, getFriendsUser } from '@/lib/actions/user.actions';
 
 async function RightSidebar() {
     const user = await currentUser();
     if (!user) return null;
-
+    const res = await getFriendsUser(user.id);
     const similarMinds = await fetchUsersRightBar({
         userId: user.id,
         pageSize: 4,
     });
 
     const suggestedCOmmunities = await fetchCommunities({ pageSize: 4 });
-
+    console.log(res);
     return (
         <section className="custom-scrollbar rightsidebar">
             <div className="flex flex-1 flex-col justify-start">
