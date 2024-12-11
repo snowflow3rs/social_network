@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     title: 'social',
     description: 'A social network',
 };
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <ClerkProvider>

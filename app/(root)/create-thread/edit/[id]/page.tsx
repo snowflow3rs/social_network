@@ -13,6 +13,7 @@ const page = async ({ params }: { params: { id: string } }) => {
     const test = await fetchThreadById(params.id);
 
     if (!userInfo?.onboarded) redirect('/onboarding');
+
     const threadData = {
         text: test.text,
         image_thread: test.image,
