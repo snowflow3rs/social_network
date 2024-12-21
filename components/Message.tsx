@@ -1,23 +1,27 @@
 'use client';
 
-import { format } from 'timeago.js';
+import { extractTime, multiFormatDateString } from '@/lib/utils';
+
 const Message = ({
     imgMess,
     text,
     owner,
     imgP2,
     createAt,
+    receiverData,
 }: {
     imgMess: string;
     text: string;
     owner: any;
     imgP2: string;
     createAt: string;
+    receiverData: any;
 }) => {
     const chatClassName = owner ? 'chat-end' : 'chat-start';
 
     const bubbleBgColor = owner ? 'bg-primary-500' : 'bg-blue-300';
-    const test = owner ? imgP2 : '/assets/user.svg';
+    const test = owner ? imgP2 : receiverData?.image;
+
     return (
         <div className={`chat ${chatClassName}`}>
             <div className="chat-image avatar">
@@ -32,7 +36,9 @@ const Message = ({
                 )}
                 {text}
             </div>
-            <div className="chat-footer opacity-50 text-xs flex gap-1 items-center">{format(createAt)}</div>
+            <div className="chat-footer opacity-50 text-xs flex gap-1 items-center">
+                {multiFormatDateString(createAt)}
+            </div>
         </div>
     );
 };

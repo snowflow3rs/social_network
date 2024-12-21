@@ -15,7 +15,6 @@ const Home = async ({ searchParams }: { searchParams: { [key: string]: string | 
     const userInfor = await fetchUser(user.id);
     if (!userInfor?.onboarded) redirect('/onboarding');
     const resultPost = await fetchPosts(searchParams.page ? +searchParams.page : 1, 30);
-    console.log(resultPost, 'sad');
 
     return (
         <>

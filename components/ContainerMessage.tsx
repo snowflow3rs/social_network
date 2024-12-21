@@ -6,6 +6,7 @@ import Messages from './Messages';
 import MessageInput from './MessageInput';
 import { NoChatSelected } from './Nochat';
 import axios from 'axios';
+import { connectSocket, getSocket } from '@/lib/Socket/SocketService';
 
 interface props {
     data: any;
@@ -15,11 +16,37 @@ interface props {
 const ContainerMessage = ({ data, currentUserId, imgP }: props) => {
     const [currentChat, setCurrentChat] = useState<any>(null);
     const [messages, setMessages] = useState<any>([]);
+    const [arrvialMess, setArrivalMess] = useState<any>(null);
+
+    const [username, setusername] = useState<any>([]);
     const scrollRef = useRef<any>();
 
     const addMessage = (newMessage: any) => {
         setMessages([...messages, newMessage]);
     };
+
+    useEffect(() => {
+        connectSocket();
+    }, []);
+    useEffect(() => {
+        arrvialMess &&
+            currentChat?.members.includes(arrvialMess.sender) &&
+            setMessages((prev: any) => [...prev, arrvialMess]);
+    }, [arrvialMess, currentChat]);
+    useEffect(() => {
+        const socket = getSocket();
+        socket.on('getMessage', (data) => {
+            setArrivalMess({
+                sender: data.senderId,
+                text: data.text,
+                createdAt: Date.now(),
+            });
+        });
+    }, []);
+    useEffect(() => {
+        const socket = getSocket();
+        socket.emit('addUser', currentUserId);
+    }, [currentUserId]);
     useEffect(() => {
         const getMess = async () => {
             if (!currentChat) return;
@@ -33,8 +60,22 @@ const ContainerMessage = ({ data, currentUserId, imgP }: props) => {
         getMess();
     }, [currentChat]);
     useEffect(() => {
+        const getUserData = async () => {
+            if (!currentChat) return;
+            try {
+                const res = await axios.post('/api/user', { userId: currentChat.members[1] });
+                setusername(res.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        getUserData();
+    }, [currentChat]);
+
+    useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
     return (
         <>
             <div className="flex h-full ">
@@ -58,7 +99,7 @@ const ContainerMessage = ({ data, currentUserId, imgP }: props) => {
                             <>
                                 <div className="bg-primary-500 px-4 py-2 mb-2">
                                     <span className=" text-white label-text">To:</span>
-                                    <span className="text-white ml-2 font-bold">John doe</span>
+                                    <span className="text-white ml-2 font-bold">{username.name}</span>
                                 </div>
 
                                 <Messages
@@ -66,9 +107,15 @@ const ContainerMessage = ({ data, currentUserId, imgP }: props) => {
                                     currentUserId={currentUserId}
                                     imgP1={imgP}
                                     scrollRef={scrollRef}
+                                    username={username}
                                 />
 
-                                <MessageInput curChat={currentChat.id} userId={currentUserId} funAdd={addMessage} />
+                                <MessageInput
+                                    curChatData={currentChat}
+                                    curChatId={currentChat.id}
+                                    userId={currentUserId}
+                                    funAdd={addMessage}
+                                />
                             </>
                         ) : (
                             <>

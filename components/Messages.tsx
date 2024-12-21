@@ -7,13 +7,14 @@ const Messages = ({
     currentUserId,
     imgP1,
     scrollRef,
+    username,
 }: {
     data: Array<any>;
     currentUserId: string;
     imgP1: any;
     scrollRef: any;
+    username: any;
 }) => {
-    console.log('123', data);
     return (
         <div className="px-4 flex-1 overflow-y-auto">
             {data.map(
@@ -25,7 +26,8 @@ const Messages = ({
                                 text={msg.text}
                                 owner={msg.sender === currentUserId}
                                 imgP2={imgP1}
-                                createAt={msg.createAt}
+                                createAt={msg.createdAt}
+                                receiverData={username}
                             />
                         </div>
                     ),

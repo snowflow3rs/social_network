@@ -2,7 +2,7 @@
 import EmojiPicker from 'emoji-picker-react';
 import { BsSend } from 'react-icons/bs';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,12 +14,30 @@ import { usePathname } from 'next/navigation';
 import { isBase64Image } from '@/lib/utils';
 import { useUploadThing } from '@/lib/uploadThing';
 import { Input } from './ui/input';
-const MessageInput = ({ curChat, userId, funAdd }: { curChat: string; userId: string; funAdd: any }) => {
-    console.log(curChat);
+import { getSocket } from '@/lib/Socket/SocketService';
+const MessageInput = ({
+    curChatData,
+    curChatId,
+    userId,
+    funAdd,
+}: {
+    curChatData: any;
+    curChatId: string;
+    userId: string;
+    funAdd: any;
+}) => {
     const pathname = usePathname();
     const [files, setFiles] = useState<File[]>([]);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const { startUpload } = useUploadThing('media');
+
+    const socket = getSocket();
+
+    useEffect(() => {
+        socket.on('getUsers', (msg) => {
+            console.log(msg);
+        });
+    }, []);
     const messValidation = z.object({
         text: z.string(),
         img_mess: z.string().optional(),
@@ -32,7 +50,7 @@ const MessageInput = ({ curChat, userId, funAdd }: { curChat: string; userId: st
         defaultValues: {
             sender: userId,
             text: '',
-            conversationId: curChat,
+            conversationId: curChatId,
             img_mess: '',
         },
     });
@@ -62,7 +80,6 @@ const MessageInput = ({ curChat, userId, funAdd }: { curChat: string; userId: st
     };
 
     const onSubmit = async (values: z.infer<typeof messValidation>) => {
-        console.log(values);
         const blod = values.img_mess || '';
         const hasImageChange = isBase64Image(blod);
 
@@ -73,6 +90,12 @@ const MessageInput = ({ curChat, userId, funAdd }: { curChat: string; userId: st
             }
         }
 
+        const receiver = curChatData.members.find((member: any) => member !== userId);
+        socket.emit('sendMessage', {
+            senderId: userId,
+            receiverId: receiver,
+            text: values.text,
+        });
         await newMessage(values, pathname);
 
         funAdd(values);
